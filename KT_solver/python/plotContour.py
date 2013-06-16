@@ -26,12 +26,12 @@ x, y, z = np.genfromtxt(loadpath, unpack = True, dtype = 'f8')
 # interpolate z(x,y) at points xi, yi using Delaunay triangulation aka natural neighbour interpolation ('nn' option)
 #z = mlab.griddata(x, y, z, x, y, interp = 'nn')
 
-z = z.reshape(20,60)
-x = np.linspace(-3,-0.05,60)
+z = z.reshape(20,400)
+x = np.linspace(-20,-0.05,400)
 y = np.linspace(0,0.95,20)
 
 # array containing value of levels
-levels = np.linspace(0.1, 1, 100)
+levels = np.linspace(0.2, 1, 100)
 
 fig = plt.figure()
 CS1 = plt.contourf(x, y, z, levels, cmap = plt.cm.coolwarm, vmax = np.max(levels), vmin = np.min(levels))

@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
    dx[1] = 0.05;
    
    //cout << "Enter domain width:"; cin >> xi[0];
-   xi[0] = 3;
+   xi[0] = 20;
    xi[1] = 1; llc[0] = -xi[0]; llc[1] = 0;
    
    cout << "Enter end time:"; cin >> endtime;
