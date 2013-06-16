@@ -1,9 +1,9 @@
-#ifndef FLUMEFLUXNOVEL_H
-#define FLUMEFLUXNOVEL_H
+#ifndef FLUME2DCONV_H
+#define FLUME2DCONV_H
 
 #include "Flux.h"
 
-class Flume2DConvectionFluxNoVel: public Flux
+class Flume2DConvection: public Flux
 {
  private:
 
@@ -12,7 +12,7 @@ class Flume2DConvectionFluxNoVel: public Flux
 
  public:
 
- Flume2DConvectionFluxNoVel(): Flux(2,1) {m_segregation_rate = 0; m_velocity.resize(2);}
+ Flume2DConvection(): Flux(2,1) {m_segregation_rate = 0; m_velocity.resize(2);}
 
   inline void set_parameter(const SField & sr)
   {

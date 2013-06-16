@@ -26,7 +26,7 @@ void RK3Solver::get_solution(string name, double dt)
   VectorField pos = m_spatialSolver->get_position();
 
   // Stores the bound to reset it at the end
-  Vector<ScalarField> bounds = m_un[0].get_bounds();
+  ScalarField bound = m_un[0].get_bound();
 
   VectorField u;
   VectorField df;
@@ -46,20 +46,19 @@ void RK3Solver::get_solution(string name, double dt)
       if(testDeltaT!=newDeltaT) newDeltaT = testDeltaT;
 
       u = m_un + (-newDeltaT*unity)*df;
-      u[0].set_bounds(bounds);
+      u[0].set_bound(bound);
 
       df = m_spatialSolver->get_numerical_flux_gradient(u);
       u = (3/4.*unity)*m_un + (1/4.*unity)*(u + (-newDeltaT*unity)*df);
-      u[0].set_bounds(bounds);
+      u[0].set_bound(bound);
 
       df = m_spatialSolver->get_numerical_flux_gradient(u);
       u = (1/3.*unity)*m_un + (2/3.*unity)*(u + (-newDeltaT*unity)*df);
-      u[0].set_bounds(bounds);
+      u[0].set_bound(bound);
 
       if( (int)(currenttime/dt) == writingCounter )
         {
 	  cout << "writing file number " << writingCounter << endl;
-	  //path = "Results/" + name + "_" + to_string(writingCounter) + ".tsv"; only in C++ 11
 	  path =  "Results/" + name + "_" + boost::lexical_cast<string>(writingCounter) + ".tsv";
 	  data.open(path.c_str(), ios::out);
 	  u[0].write_in_file(data, deltaX, lowerLeftCorner);
@@ -67,7 +66,7 @@ void RK3Solver::get_solution(string name, double dt)
 
 	  fstream initb;
 	  initb.open("Results/Flume2D_initial/phib.tsv",ios::out);
-	  initb << u[0].get_bounds();
+	  initb << u[0].get_bound();
 	  initb.close();
 
 	  writingCounter++;

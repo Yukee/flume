@@ -11,10 +11,10 @@ class Flume2DField : public PrescribedField
 
   Flume2DField() {Flume2DField(Vector<int> (2,1));}
 	 
- Flume2DField(Vector<int> range): PrescribedField(range) {
-	 // Designed for a 2D problem
-	 //if(range.size() != 2) std::throw invalid_argument("In Flume2DField::Flume2DField(range) dimension must be 2");
- }
+  Flume2DField(Vector<int> range): PrescribedField(range) {
+    // Designed for a 2D problem
+    if(range.size() != 2) throw std::invalid_argument("In Flume2DField::constructor dimension must be 2");
+  }
 	 
  Flume2DField(const Flume2DField & u): PrescribedField(u) {}
 

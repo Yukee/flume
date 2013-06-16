@@ -10,18 +10,18 @@ double & Flume2DField::operator()(Vector<int> component)
 					  cout << "received m_r["<<d<<"] = " << m_r[d] << " expected -1 <= m_r[d] <= " << m_r[d] << endl;
 					  throw invalid_argument("In Flume2DField::operator()");
 					}
-
-	if(component[0] == -1)
-	{
-	  component[0] += 1;
-	}
 		
-	  if(component[0] == m_r[0])
+	if(component[0] == m_r[0])
 	{
 	  component[0] -= 1;
 	}
+	
+	if(component[1] == -1)
+	{
+	  component[1] += 1;
+	}
 				
-	  if(component[1] == m_r[1])
+	if(component[1] == m_r[1])
 	{
 	  component[1] -= 1;
 	}
@@ -100,7 +100,7 @@ bool Flume2DField::operator==(const Flume2DField & u)
         for(unsigned int i=0; i<m_r_len; i++) same_ranges*=(u.m_r[i] == m_r[i]);
         if(same_ranges)
         {
-            bool same_data = true;
+			bool same_data = true;
             for(unsigned int i=0;i<m_data_len;i++) same_data*=(u.m_data[i] == m_data[i]);
             if(same_data) are_equal = true;
         }

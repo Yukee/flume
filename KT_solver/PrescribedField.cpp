@@ -3,6 +3,8 @@
 #include <math.h>
 using namespace std;
 
+#define DEBUG
+
 double & PrescribedField::operator()(Vector<int> component)
 {
   for(unsigned int d=0;d<m_r_len;d++) if(component[d] > m_r[d] || component[d] < -1)
@@ -32,6 +34,7 @@ void PrescribedField::set_bound(const int d, const int i, const ScalarField & u)
 {
 	if( i*i != 1 ) throw invalid_argument("In PrescribedField::set_bound(int d, int i, ScalarField u) direction i must be either -1 or 1");
 	if( d >= (int)m_r_len || d < 0 ) throw invalid_argument("In PrescribedField::set_bound(int d, int i, ScalarField u) axis number d must be >=0 and <m_r_len");
+	if( !(u.get_range() == m_bounds[2*d].get_range()) ) throw invalid_argument("In PrescribedField::set_bound(int d, int i, ScalarField u) invalid u range");
 	
 	if(i == -1) m_bounds[2*d] = u;
 	else m_bounds[2*d+1] = u;
