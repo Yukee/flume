@@ -4,6 +4,10 @@
 #include "PrescribedField.h"
 #include <stdio.h>
 
+/*
+Note: the boundaries are initialized to 0 in PrescribedField constructor
+*/
+
 class Flume2DField : public PrescribedField
 {
  public:
@@ -19,11 +23,11 @@ class Flume2DField : public PrescribedField
  Flume2DField(const Flume2DField & u): PrescribedField(u) {}
 
 // set west boundary
-void set_bound(const ScalarField & u);
+ void set_bound(const ScalarField & u);
 
  inline ScalarField get_bound()
  {
-	 // West boundary
+   // West boundary
    return m_bounds[0];
  }
 

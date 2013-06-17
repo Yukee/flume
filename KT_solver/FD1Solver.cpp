@@ -164,7 +164,7 @@ void FD1Solver::compute_localSpeed()
 
 void FD1Solver::compute_numerical_convection_flux()
 {
-  //no particular bc on the flux?
+  //no particular bc on the flux? -> null flux at West boundary
   VectorField upperFlux;
   VectorField lowerFlux;
 	
@@ -178,7 +178,9 @@ void FD1Solver::compute_numerical_convection_flux()
       lowerFlux = m_eq->get_convectionFlux(lower_left_intermediate_un_values[d], d);
       left_convection_flux[d] = (0.5*unity)*(upperFlux + lowerFlux) + (-0.5*unity)*left_localSpeed[d]*(upper_left_intermediate_un_values[d] - lower_left_intermediate_un_values[d]);
     }
-   
+
+   for(int it=0;it<m_nxSteps[0];++it) left_convection_flux[1][0](it*m_b[0]) = 0;
+
 }
 
 void FD1Solver::compute_numerical_diffusion_flux()
@@ -197,11 +199,18 @@ void FD1Solver::compute_source_term()
   source_term = m_eq->get_source_term(m_un);
 }
 
+void FD1Solver::compute_south_boundary()
+{
+  for(int it=0;it<m_nxSteps[0];++it) m_un[0](it*m_b[0]-m_b[1]) = m_un[0](it*m_b[0]);
+} // Copy un value at the south edge into the south boundary; this is specific to the flume pb
 
 //the flux gradient may be infinite, if you take a too large time step.
 VectorField FD1Solver::get_numerical_flux_gradient(const VectorField & un)
 {
   m_un = un;
+
+  // Copy un value at the south edge into the south boundary; this is specific to the flume pb
+  compute_south_boundary();
 
   compute_un_derivatives();
   compute_intermediate_un_values();

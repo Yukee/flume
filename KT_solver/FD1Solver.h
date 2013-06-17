@@ -124,6 +124,8 @@ class FD1Solver
 
   VectorField source_term;
 
+  void compute_south_boundary();
+
   void compute_un_derivatives();
   void compute_intermediate_un_values();
   void compute_localSpeed();

@@ -40,6 +40,15 @@ void PrescribedField::set_bound(const int d, const int i, const ScalarField & u)
 	else m_bounds[2*d+1] = u;
 }
 
+ScalarField PrescribedField::get_bound(const int d, const int i)
+{
+	if( i*i != 1 ) throw invalid_argument("In PrescribedField::get_bound(int d, int i) direction i must be either -1 or 1");
+	if( d >= (int)m_r_len || d < 0 ) throw invalid_argument("In PrescribedField::get_bound(int d, int i) axis number d must be >=0 and <m_r_len");
+
+	if(i == -1) return m_bounds[2*d];
+	return m_bounds[2*d+1];
+}
+
 PrescribedField::~PrescribedField()
 {
 	if(m_data) delete[] m_data;
@@ -57,8 +66,8 @@ void PrescribedField::resize_field(Vector<int> range)
 	 
     for(unsigned int d=0;d<m_r_len;d++)
       {
-	m_bounds[2*d].resize_field(range_surf.drop(d));
-	m_bounds[2*d+1].resize_field(range_surf.drop(d));
+	m_bounds[2*d].resize_field(range_surf.drop(d)); m_bounds[2*d] = 0;
+	m_bounds[2*d+1].resize_field(range_surf.drop(d)); m_bounds[2*d+1] = 0;
       }
 
     m_data_len = 1;

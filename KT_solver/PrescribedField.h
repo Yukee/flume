@@ -3,6 +3,10 @@
 
 #include "ScalarField.h"
 
+/*
+Note: the boundaries are initialized to 0
+*/
+
 class PrescribedField : public ScalarField
 {
  public:
@@ -16,18 +20,21 @@ class PrescribedField : public ScalarField
 	 
 	 for(unsigned int d=0;d<m_r_len;d++)
 	 {
-		 m_bounds[2*d].resize_field(m_r.drop(d));
-		 m_bounds[2*d+1].resize_field(m_r.drop(d));
+		 m_bounds[2*d].resize_field(m_r.drop(d)); m_bounds[2*d] = 0;
+		 m_bounds[2*d+1].resize_field(m_r.drop(d)); m_bounds[2*d+1] = 0;
 	 }
  }
 	 
  PrescribedField(const PrescribedField & u): ScalarField(u) {
-	 m_bounds = u.m_bounds;}
+	m_bounds = u.m_bounds;
+}
 
  inline Vector<ScalarField> get_bounds()
  {
    return m_bounds;
  }
+
+ScalarField get_bound(const int d, const int i);
 
  inline void set_bounds(Vector<ScalarField> bounds)
  {

@@ -86,7 +86,7 @@ double phi0(double x, double z)
 {
   x+=shift;
   double phi0 = 0;
-  if(z < 0.80*h(x) && z >= 0) phi0 = 1;
+  if(z < 0.95*h(x) && z >= 0) phi0 = 1;
   return phi0;
 }
 

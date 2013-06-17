@@ -43,13 +43,13 @@ int main(int argc, char *argv[])
    
    Vector<double> dx (2); Vector<double> xi (2); Vector<double> llc (2); double endtime; double timestep; double timebtwfiles; string filename; double sr;
    //cout << "Enter cell width dx:"; cin >> dx[0];
-   dx[0] = 0.05;
+   dx[0] = 0.02;
    
    //cout << "Enter cell heigh dz:"; cin >> dx[1];
-   dx[1] = 0.05;
+   dx[1] = 0.02;
    
    //cout << "Enter domain width:"; cin >> xi[0];
-   xi[0] = 20;
+   xi[0] = 6;
    xi[1] = 1; llc[0] = -xi[0]; llc[1] = 0;
    
    cout << "Enter end time:"; cin >> endtime;
@@ -84,11 +84,17 @@ int main(int argc, char *argv[])
    }
    
    phi = domain*phi; u0 = domain*u0; dvdy0 = domain*dvdy0;
+
+   // Set the west and south boundary conditions
    
-   ScalarField west_boundary_phi (xr.drop(0));
-   for(int it=0;it<west_boundary_phi.get_size();++it) west_boundary_phi[it] = phi0( llc[0]-dx[0] , llc[1]+it*dx[1] );
-   phi[0].set_bound(west_boundary_phi);
-   
+   ScalarField phiWest (xr.drop(0)); 
+   for(int it=0;it<phiWest.get_size();++it) phiWest[it] = phi0( llc[0]-dx[0] , llc[1]+it*dx[1] );
+   phi[0].set_bound(0,-1,phiWest);
+
+   ScalarField phiSouth (xr.drop(1)); 
+   for(int it=0;it<phiSouth.get_size();++it) phiSouth[it] = phi0( llc[0]+it*dx[0] , llc[1]-dx[1] );
+   phi[0].set_bound(1,-1,phiSouth);
+
    // Sets the parameters of the convection flux: velocity field and segregation rate
    
    SField seg_rate = (4*sr)*domain; 

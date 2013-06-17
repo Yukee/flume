@@ -6,7 +6,7 @@
 #include "PrescribedField.h"
 #include "Flume2DField.h"
 
-typedef Flume2DField SField;
+typedef PrescribedField SField;
 typedef Vector<SField> VectorField;
 typedef Vector<VectorField> TensorField;
 
