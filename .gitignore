@@ -9,8 +9,6 @@ tmp/
 Results/
 # Simulations tests directory
 Test/
-# Matlab plot directory
-Matlab/
 # Binary and object files directories
 bin/
 obj/
