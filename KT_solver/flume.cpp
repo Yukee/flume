@@ -26,8 +26,8 @@
 #include "WriteVectorField.h"
 
 // Flume pb
-//#include "Flume3D.h"
-#include "Flume2D.h"
+#include "Flume3D.h"
+//#include "Flume2D.h"
 
 using namespace std;
 int main(int argc, char *argv[])
