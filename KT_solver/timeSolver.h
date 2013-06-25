@@ -28,7 +28,6 @@ class timeSolver
         int m_ntSteps;
         FD1Solver *m_spatialSolver;
         VectorField m_un;
-	
 };
 
 #endif // TIMESOLVER_H

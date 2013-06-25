@@ -43,14 +43,14 @@ int main(int argc, char *argv[])
    
    Vector<double> dx (2); Vector<double> xi (2); Vector<double> llc (2); double endtime; double timestep; double timebtwfiles; string filename; double sr;
    //cout << "Enter cell width dx:"; cin >> dx[0];
-   dx[0] = 0.02;
+   dx[0] = 0.001;
    
    //cout << "Enter cell heigh dz:"; cin >> dx[1];
-   dx[1] = 0.02;
+   dx[1] = 0.001;
    
    //cout << "Enter domain width:"; cin >> xi[0];
-   xi[0] = 6;
-   xi[1] = 1; llc[0] = -xi[0]; llc[1] = 0;
+   xi[0] = 4.5;
+   xi[1] = 0.25; llc[0] = -xi[0]; llc[1] = 0;
    
    cout << "Enter end time:"; cin >> endtime;
    
@@ -97,10 +97,25 @@ int main(int argc, char *argv[])
 
    // Sets the parameters of the convection flux: velocity field and segregation rate
    
-   SField seg_rate = (4*sr)*domain; 
+   SField seg_rate = (sr)*domain; 
    ptrCF->set_parameter(seg_rate); 
    ptrCF->set_parameter(u0); 
    ptrS->set_parameter(dvdy0);
+
+   // Checks
+
+   fstream phiinit;
+   phiinit.open("Results/Check/phiinit.tsv",ios::out);
+   phi[0].write_in_file(phiinit, dx, llc);
+   
+   fstream uinit;
+   uinit.open("Results/Check/uinit.tsv",ios::out);
+   write_VectorField(u0, pos, uinit);
+
+   VectorField df (2); df[0] = ptrCF->get_max_eigenvalue(phi,0); df[1] = ptrCF->get_max_eigenvalue(phi,1);
+   fstream duinit;
+   duinit.open("Results/Check/duinit.tsv",ios::out);
+   write_VectorField(df, pos, duinit);
 
    // Timestepper
    
@@ -108,7 +123,9 @@ int main(int argc, char *argv[])
    
    // Compute the time evolution
    
-   tsolv.get_solution(filename, timebtwfiles);
+   write_flume_infos(filename, sr);
+
+   //tsolv.get_solution(filename, timebtwfiles);
 
    return 0;
 }

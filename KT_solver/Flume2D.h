@@ -2,96 +2,104 @@
 #define FLUME2D
 #include <math.h>
 #include <iostream>
+#include <fstream>
+#include <string>
 
-/* 2D setup in the centre plane for the flume problem.
-Assuming that H = W = 1. If not, multiply by the expression of H and W indicated in the commented text before each function. If "complicated" is indicated, you cannot just multiply by something and you will have to recalculate th expression depending and H and W. If nothing is indicated nothing is to be changed. */
+/* 2D setup in the centre plane for the flume problem. */
 
-const static double U = 2.3; const static double uF = 2.; const static double alpha=0.5; const static int m = 2; const static int n = 4; const static double shift = 0.0;
+const static double H = 0.25; const static double W = 1;
+const static double U = 2.3; const static double uF = 2; const static double alpha=0.5; const static int m = 2; const static int n = 4; const static double shift = 0.;
 
-double Sech(double x)
+// write the value of the various quantities in a file
+inline void write_flume_infos(std::string path, double sr)
+{
+	std::fstream infos;
+	infos.open( ("Results/" + path + "_flume_infos.tsv").c_str(), std::ios::out);
+
+	infos << "H\t" << "W\t" << "U\t" << "uF\t" << "sr\t" << "alpha\t" << "m\t" << "n\t" << "shift" << std::endl;
+	infos << H << "\t" << W << "\t" << U << "\t" << uF << "\t" << sr << "\t" << alpha << "\t" << m << "\t" << n << "\t" << shift << std::endl;
+
+	infos.close();
+}	
+
+inline double sech(double x)
 {
   return 1/cosh(x);
 }
 
-double Csch(double x)
-{
-  if(x==0) std::cout << "division by zero in Flume2D.h" << std::endl;
-  return 1/sinh(x);
-}
-
-// complicated
 // derivative of the stream function wrt x, ie -1*{ depth averaged v velocity in the travelling frame }
-double dpsidx(double x)
+inline double dpsidx(double x)
 {
   return 0;
 }
 
-// complicated
 // derivative of the stream function wrt y, ie { depth averaged u velocity in the travelling frame }
-double dpsidy(double x)
+inline double dpsidy(double x)
 {
-  return U*((-1 - 2*n)/((1 + 2*m)*(1 + 2*m + 2*n)) + pow(0,2*m)/pow(-tanh(x),m) - pow(0,2*(m + n))*pow(-tanh(x),-m - n) + (pow(0,2*n)*(1 + 2*n))/((1 + 2*m)*(1 + 2*m + 2*n)*pow(-tanh(x),n)))*tanh(x);
+  return -((H*(1 + 2*n)*U*tanh(x/W))/((1 + 2*m)*(1 + 2*m + 2*n)));
 }
 
-// *H/W
-double h(double x)
+inline double y0(double x)
 {
-  return y0(x);
+  return W*sqrt(tanh(-x/W));
 }
 
-// *W
-double y0(double x)
+inline double dy0dx(double x)
 {
-  return sqrt(tanh(-x));
+  return -0.5*(1 - tanh(x/W)*tanh(x/W))/sqrt(tanh(-x/W));
 }
 
-// *H/W
-double dhdx(double x)
+inline double h(double x)
 {
-  return -Sech(x)*Sech(x)/(2*sqrt(tanh(-x)));
+  return H*y0(x)/W;
 }
 
-// *H/W
-double dhdy(double x)
+inline double dhdx(double x)
+{
+  return H*dy0dx(x)/W;
+}
+
+inline double dhdy(double x)
 {
   return 0;
 }
 
 // speed components in the travelling frame
 
-double u(double x, double z)
+inline double u(double x, double z)
 {
   return -uF + (dpsidy(x)/h(x) + uF)*(alpha + 2*(1 - alpha)*z/h(x));
 }
 
-double v(double x, double z)
+inline double v(double x, double z)
 {
   return (-dpsidx(x)/h(x))*(alpha + 2*(1-alpha)*z/h(x));
 }
 
-double w(double x, double z)
+inline double w(double x, double z)
 {
   return uF*(1-alpha)*(z*z*dhdx(x)/pow(h(x),2)) + (1/pow(h(x),2))*(dhdx(x)*dpsidy(x) - dhdy(x)*dpsidx(x))*(alpha+2*(1-alpha)*z/h(x))*z;
 }
 
 // dv/dy in the centre plane
 
-double dvdy(double x, double z)
+inline double dvdy(double x, double z)
 {
-  return ((1 + 2*n)*U*Csch(x)*Sech(x)*(2*z*(-1 + alpha) - alpha*sqrt(-tanh(x))))/((1 + 2*m)*(1 + 2*m + 2*n));
+  return -((U*pow(W,-1 - 2*m - 2*n)*pow(sech(x/W),2)*(2*z*(-1 + alpha) - H*alpha*sqrt(-tanh(x/W)))*(pow(W*sqrt(-tanh(x/W)),2*(m + n)) + 2*n*pow(W,2*(m + n))*pow(-tanh(x/W),m + n))*
+       pow(-tanh(x/W),-1 - m - n))/(H*(1 + 2*m)*(1 + 2*m + 2*n)));
 }
 
 // initial concentration of small particules
-double phi0(double x, double z)
+inline double phi0(double x, double z)
 {
   x+=shift;
   double phi0 = 0;
-  if(z < 0.95*h(x) && z >= 0) phi0 = 1;
+  if(z < 0.8*h(x) && z >= 0) phi0 = 1;
   return phi0;
 }
 
 // returns 1 if within the domain of the flow
-double boundary(double x, double z)
+inline double boundary(double x, double z)
 {
   x+=shift;
   double boundary = 0;
