@@ -1,6 +1,6 @@
 #include "EulerSolver.h"
 #include "FD1Solver.h"
-#include <iostream>
+#include <string>
 #include <boost/lexical_cast.hpp>
 #include "WriteVectorField.h"
 
@@ -24,6 +24,9 @@ void EulerSolver::get_solution(string name, double dt)
   // used in write_VectorField
   VectorField pos = m_spatialSolver->get_position();
 
+  // Stores the bound to reset it at the end
+  ScalarField un_west = m_un[0].get_bound(0,-1);
+
   double testDeltaT;
   double newDeltaT = m_deltaT;
   double currenttime = 0;
@@ -41,19 +44,15 @@ void EulerSolver::get_solution(string name, double dt)
       if(testDeltaT!=newDeltaT) newDeltaT = testDeltaT;
 
       un1 = m_un  - (newDeltaT*unity)*df;
+      un1[0].set_bound(0,-1,un_west);
 
       if( (int)(currenttime/dt) == writingCounter )
         {
 	  cout << "writing file number " << writingCounter << endl;
-	  //path = "Results/" + name + "_" + to_string(writingCounter) + ".tsv"; Only in C++ 11
 	  path =  "Results/" + name + "_" + boost::lexical_cast<string>(writingCounter) + ".tsv";
 	  data.open(path.c_str(), ios::out);
 	  un1[0].write_in_file(data, deltaX, lowerLeftCorner);
 
-	  //VectorField velocity = un1.drop(0);
-	  //write_VectorField(un1, pos, data);
-
-	  //un1[0].write_in_file_matrixform(data);
 	  data.close();
 	  writingCounter++;
         }

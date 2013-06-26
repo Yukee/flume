@@ -4,7 +4,6 @@
 #include "Vector.h"
 #include "ScalarField.h"
 #include "PrescribedField.h"
-#include "Flume2DField.h"
 
 typedef PrescribedField SField;
 typedef Vector<SField> VectorField;

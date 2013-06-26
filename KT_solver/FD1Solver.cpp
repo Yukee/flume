@@ -9,7 +9,7 @@ FD1Solver::FD1Solver(Vector<double> deltaX, Vector<double> xInterval, Equation *
    m_deltaX(deltaX), m_xInterval(xInterval), m_eq(eq), m_lowerLeftCorner(lowerLeftCorner)
 {
   // Gets the dimensions of the problem
-  m_m = m_eq->get_solved_dimensions();
+  m_m = m_eq->get_solved_dimensions(); 
   m_n = m_eq->get_space_dimensions();
 
   // Gets the base vectors of the physical space
@@ -179,8 +179,8 @@ void FD1Solver::compute_numerical_convection_flux()
       left_convection_flux[d] = (0.5*unity)*(upperFlux + lowerFlux) + (-0.5*unity)*left_localSpeed[d]*(upper_left_intermediate_un_values[d] - lower_left_intermediate_un_values[d]);
     }
 
-   for(int it=0;it<m_nxSteps[0];++it) left_convection_flux[1][0](it*m_b[0]) = 0;
-
+   // Null flux across south boundary
+   for(int i=0;i<m_nxSteps[0];i++) for(int j=0;j<m_nxSteps[1];j++) left_convection_flux[2][0](i*m_b[0]+j*m_b[1]) = 0;
 }
 
 void FD1Solver::compute_numerical_diffusion_flux()
@@ -201,7 +201,7 @@ void FD1Solver::compute_source_term()
 
 void FD1Solver::compute_south_boundary()
 {
-  for(int it=0;it<m_nxSteps[0];++it) m_un[0](it*m_b[0]-m_b[1]) = m_un[0](it*m_b[0]);
+  for(int i=0;i<m_nxSteps[0];i++) for(int j=0;j<m_nxSteps[1];j++) m_un[0](i*m_b[0]+j*m_b[1]-m_b[2]) = m_un[0](i*m_b[0]);
 } // Copy un value at the south edge into the south boundary; this is specific to the flume pb
 
 //the flux gradient may be infinite, if you take a too large time step.

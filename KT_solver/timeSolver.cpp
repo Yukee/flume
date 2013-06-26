@@ -36,7 +36,7 @@ void timeSolver::print_infos(string path)
 
 	for(int d=0;d<n;d++)
 	{
-		infos << dom[d][0] << endl << dom[d][1] << endl;
+		infos << dom[0][d] << endl << dom[1][d] << endl;
 	}
 	
 	for(int d=0;d<n;d++)

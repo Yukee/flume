@@ -44,7 +44,7 @@ inline double dpsidy(double x, double y)
 
 inline double h(double x, double y)
 {
-  return H*(pow(y0(x),2*n)-pow(y,2*n))/pow(y0(x),2*n-1)/W;
+  return (H/W)*(pow(y0(x),2*n)-pow(y,2*n))/pow(y0(x),2*n-1);
 }
 
 inline double y0(double x)
