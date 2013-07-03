@@ -50,10 +50,10 @@ int main(int argc, char *argv[])
    dx[2] = 0.005;
    
    //cout << "Enter domain width:"; cin >> xi[0];
-   xi[0] = 4.5;
-   xi[1] = 1; 
+   xi[0] = 5;
+   xi[1] = 2+2*dx[1]; // need an extra slice to be at 0 at both edges
    xi[2] = 0.25;
-   llc[0] = -xi[0]; llc[1] = -0.5; llc[2] = 0;
+   llc[0] = -xi[0]; llc[1] = -1; llc[2] = 0;
    
    cout << "Enter end time:"; cin >> endtime;
    
@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
     phi[0][it] = phi0(pos[0][it], pos[1][it], pos[2][it]);
     domain[it] = boundary(pos[0][it], pos[1][it], pos[2][it]);
     u0[0][it] = u(pos[0][it], pos[1][it], pos[2][it]);
-    u0[1][it] = w(pos[0][it], pos[1][it], pos[2][it]);
+    u0[1][it] = v(pos[0][it], pos[1][it], pos[2][it]);
+    u0[2][it] = w(pos[0][it], pos[1][it], pos[2][it]);
    }
    
    phi = domain*phi; u0 = domain*u0; 
@@ -110,9 +111,25 @@ int main(int argc, char *argv[])
    phiinit.open("Results/Check/phiinit.tsv",ios::out);
    phi[0].write_in_file(phiinit, dx, llc);
    
-   fstream uinit;
+   fstream uinit; 
+   Vector<int> rcentre (2); rcentre = solv_ptr->get_nxSteps().drop(1); Vector< Vector<int> > b = solv_ptr->get_b(); int nysteps = solv_ptr->get_nxSteps()[1];
+   VectorField ured = VectorField ( 2, SField (rcentre) ); VectorField posred = VectorField ( 2, SField (rcentre) );
+   for(int i=0;i<rcentre[0];i++) for(int k=0;k<rcentre[1];k++) {
+	ured[0](i*x+k*y) = u0[0](i*b[0]+k*b[2]+0.5*nysteps*b[1]);
+	ured[1](i*x+k*y) = u0[2](i*b[0]+k*b[2]+0.5*nysteps*b[1]);
+	posred[0](i*x+k*y) = pos[0](i*b[0]+k*b[2]+0.5*nysteps*b[1]);
+	posred[1](i*x+k*y) = pos[2](i*b[0]+k*b[2]+0.5*nysteps*b[1]);
+	}
    uinit.open("Results/Check/uinit.tsv",ios::out);
-   write_VectorField(u0, pos, uinit);
+   write_VectorField(ured, posred, uinit);
+
+   fstream dvdy;
+   SField dvdy0 (rcentre);
+   for(int i=0;i<rcentre[0];i++) for(int k=0;k<rcentre[1];k++) {
+	dvdy0(i*x+k*y) = (1/(2*dx[1]))*( u0[1](i*b[0]+k*b[2]+(0.5*nysteps+1)*b[1]) - u0[1](i*b[0]+k*b[2]+(0.5*nysteps-1)*b[1]) );
+	}
+   dvdy.open("Results/Check/dvdyinit.tsv",ios::out);
+   dvdy0.write_in_file(dvdy, dx.drop(1), llc.drop(1));
 
    VectorField df (3); df[0] = ptrCF->get_max_eigenvalue(phi,0); df[1] = ptrCF->get_max_eigenvalue(phi,1); df[2] = ptrCF->get_max_eigenvalue(phi,2);
    fstream duinit;

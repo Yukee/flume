@@ -49,7 +49,7 @@ inline double h(double x, double y)
 
 inline double y0(double x)
 {
-  return sqrt(tanh(-x/W))/W;
+  return W*sqrt(tanh(-x/W));
 }
 
 inline double dy0dx(double x)
@@ -89,7 +89,7 @@ inline double phi0(double x, double y, double z)
 {
   x+=shift;
   double phi0 = 0;
-  if(z <= 0.8*h(x,y) && z >= 0) phi0 = 1;
+  if(z < 0.8*h(x,y) && z >= 0) phi0 = 1;
   return phi0;
 }
 
@@ -98,7 +98,7 @@ inline double boundary(double x, double y, double z)
 {
   x+=shift;
   double boundary = 0;
-  if(z <= h(x,y) && z >= 0) boundary = 1;
+  if(z < h(x,y) && z >= 0) boundary = 1;
   return boundary;
 }
 

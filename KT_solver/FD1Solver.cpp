@@ -181,6 +181,11 @@ void FD1Solver::compute_numerical_convection_flux()
 
    // Null flux across south boundary
    for(int i=0;i<m_nxSteps[0];i++) for(int j=0;j<m_nxSteps[1];j++) left_convection_flux[2][0](i*m_b[0]+j*m_b[1]) = 0;
+   // Null flux across y=-1, y=1 boundaries
+   for(int j=0;j<m_nxSteps[1];j++) for(int k=0;k<m_nxSteps[2];k++) {
+	left_convection_flux[1][0](j*m_b[1]+k*m_b[2]) = 0;
+	right_convection_flux[1][0](j*m_b[1]+k*m_b[2]+(m_nxSteps[0]-1)*m_b[0]) = 0;
+	}
 }
 
 void FD1Solver::compute_numerical_diffusion_flux()
