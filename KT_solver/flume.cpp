@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
    
    Vector<double> dx (2); Vector<double> xi (2); Vector<double> llc (2); double endtime; double timestep; double timebtwfiles; string filename; double sr;
    //cout << "Enter cell width dx:"; cin >> dx[0];
-   dx[0] = 0.001;
+   dx[0] = 0.02;
    
    //cout << "Enter cell heigh dz:"; cin >> dx[1];
    dx[1] = 0.001;
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
    
    write_flume_infos(filename, sr);
 
-   //tsolv.get_solution(filename, timebtwfiles);
+   tsolv.get_solution(filename, timebtwfiles);
 
    return 0;
 }
