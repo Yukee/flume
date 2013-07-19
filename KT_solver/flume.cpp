@@ -27,7 +27,7 @@
 
 // Flume pb
 //#include "Flume3D.h"
-#include "Flume2D.h"
+#include "Flume2DNoSqrt.h"
 
 using namespace std;
 int main(int argc, char *argv[])
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
    dx[0] = 0.02;
    
    //cout << "Enter cell heigh dz:"; cin >> dx[1];
-   dx[1] = 0.001;
+   dx[1] = 0.002;
    
    //cout << "Enter domain width:"; cin >> xi[0];
    xi[0] = 4.5;
