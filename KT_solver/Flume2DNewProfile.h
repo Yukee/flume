@@ -18,7 +18,7 @@ inline void write_flume_infos(std::string path, double sr)
 
 	infos << "H\t" << "W\t" << "U\t" << "uF\t" << "sr\t" << "alpha\t" << "m\t" << "n\t" << "shift" << std::endl;
 	infos << H << "\t" << W << "\t" << U << "\t" << uF << "\t" << sr << "\t" << alpha << "\t" << m << "\t" << n << "\t" << shift << std::endl;
-	infos << "No SQRT!!" << std::endl;
+	infos << "h(x/W = X) = -X/(1-X)" << std::endl;
 
 	infos.close();
 }	
@@ -37,17 +37,17 @@ inline double dpsidx(double x)
 // derivative of the stream function wrt y, ie { depth averaged u velocity in the travelling frame }
 inline double dpsidy(double x)
 {
-  return (H*(1 + 2*n)*U*pow(tanh(x/W),2))/((1 + 2*m)*(1 + 2*m + 2*n));
+  return (H*(1 + 2*n)*U*pow(x,2))/((1 + 2*m)*(1 + 2*m + 2*n)*pow(W - x,2));
 }
 
 inline double y0(double x)
 {
-  return W*tanh(-x/W);
+  return -x/(1-x/W);
 }
 
 inline double dy0dx(double x)
 {
-  return -pow(sech(x/W),2);
+  return -(x/(W*pow(1 - x/W,2))) - 1/(1 - x/W);
 }
 
 inline double h(double x)
@@ -86,7 +86,7 @@ inline double w(double x, double z)
 
 inline double dvdy(double x, double z)
 {
-  return (2*(1 + 2*n)*U*pow(sech(x/W),2)*pow(W*tanh(x/W),-1 - 2*n)*(H*pow(W,2*n)*alpha*pow(tanh(x/W),1 + 2*n) + 2*z*(-1 + alpha)*pow(W*tanh(x/W),2*n)))/(H*(1 + 2*m)*(1 + 2*m + 2*n));
+  return (2*(1 + 2*n)*U*W*(2*W*z*(-1 + alpha) + x*(-2*z*(-1 + alpha) + H*alpha)))/(H*(1 + 2*m)*(1 + 2*m + 2*n)*pow(W - x,2)*x);
 }
 
 // initial concentration of small particules

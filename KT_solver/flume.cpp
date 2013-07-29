@@ -27,7 +27,7 @@
 
 // Flume pb
 //#include "Flume3D.h"
-#include "Flume2DNoSqrt.h"
+#include "Flume2DNewProfile.h"
 
 using namespace std;
 int main(int argc, char *argv[])
@@ -43,13 +43,13 @@ int main(int argc, char *argv[])
    
    Vector<double> dx (2); Vector<double> xi (2); Vector<double> llc (2); double endtime; double timestep; double timebtwfiles; string filename; double sr;
    //cout << "Enter cell width dx:"; cin >> dx[0];
-   dx[0] = 0.02;
+   dx[0] = 0.05;
    
    //cout << "Enter cell heigh dz:"; cin >> dx[1];
-   dx[1] = 0.002;
+   dx[1] = 0.005;
    
    //cout << "Enter domain width:"; cin >> xi[0];
-   xi[0] = 4.5;
+   xi[0] = 7;
    xi[1] = 0.25; llc[0] = -xi[0]; llc[1] = 0;
    
    cout << "Enter end time:"; cin >> endtime;
